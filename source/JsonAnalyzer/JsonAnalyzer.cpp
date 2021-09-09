@@ -27,14 +27,18 @@ int JsonAnalyzer::jsonParseNull(const char *json, JsonNode *pJsonNode)
 
 int JsonAnalyzer::jsonParseValue(const char *json, JsonNode *pJsonNode)
 {
-    assert(nullptr != json);
-    const char* j;
-    pJsonNode->jsonType = JSON_NULL;
-    jsonParseWhitespace(j);
-    return jsonParseValue(json, pJsonNode);
+    switch(*json)
+    {
+        case 'n': return jsonParseNull(json, pJsonNode);
+        case '\0': return JSON_PARSE_EXPECT_VALUE;
+        default: return JSON_PARSE_INVALID_VALUE;
+    }
 }
 
 int JsonAnalyzer::jsonParse(JsonNode *pJsonNode, const char *json)
 {
+    assert(nullptr != json);
     pJsonNode->jsonType = JSON_NULL;
+    jsonParseWhitespace(json);
+    return jsonParseValue(json, pJsonNode);
 }

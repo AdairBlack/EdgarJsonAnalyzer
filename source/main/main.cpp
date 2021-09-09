@@ -39,13 +39,63 @@ static void testParseNull()
 
 static void testParseExpectValue()
 {
+    JsonAnalyzer jsonAnalyzer;
     JsonNode jsonNode;
+
+    jsonNode.jsonType = JSON_FALSE;
+    EXPECT_EQ_INT(JSON_PARSE_EXPECT_VALUE, jsonAnalyzer.jsonParse(&jsonNode, ""));
+    EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
+
+    jsonNode.jsonType = JSON_FALSE;
+    EXPECT_EQ_INT(JSON_PARSE_EXPECT_VALUE, jsonAnalyzer.jsonParse(&jsonNode, " "));
+    EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
+    return;
+}
+
+static void testParseInvalidValue()
+{
+    JsonAnalyzer jsonAnalyzer;
+    JsonNode jsonNode;
+
+    jsonNode.jsonType = JSON_FALSE;
+    EXPECT_EQ_INT(JSON_PARSE_INVALID_VALUE, jsonAnalyzer.jsonParse(&jsonNode, "nul"));
+    EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
+
+    jsonNode.jsonType = JSON_FALSE;
+    EXPECT_EQ_INT(JSON_PARSE_INVALID_VALUE, jsonAnalyzer.jsonParse(&jsonNode, "?"));
+    EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
+
+    return;
+}
+
+static void testParseRootNotSingular()
+{
+    JsonAnalyzer jsonAnalyzer;
+    JsonNode jsonNode;
+
+    jsonNode.jsonType = JSON_FALSE;
+    EXPECT_EQ_INT(JSON_PARSE_ROOT_NOT_SINGULAR, jsonAnalyzer.jsonParse(&jsonNode, "null x"));
+    EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
+
+    return;
+}
+
+static void testParse()
+{
+    testParseNull();
+    testParseExpectValue();
+    testParseInvalidValue();
+    testParseRootNotSingular();
+    return;
 }
 
 int main()
 {
-    printf("*****************Edgar's JsonAnalyzer*****************\n");
+    cout << "*****************Edgar's JsonAnalyzer*****************" << endl;
+    testParse();
 
+    printf("%d/%d (%3.2f%%) passed\n", test_pass, test_count, test_pass * 100.0 / test_count);
+    return main_ret;
     
 
     return 0;
