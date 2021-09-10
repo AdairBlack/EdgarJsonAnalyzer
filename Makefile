@@ -31,6 +31,6 @@ ECHO:
 #将c文件编译为o文件，并放在指定放置目标文件的目录中即OBJS_DIRe
 $(CUR_OBJS):%.o:%.c
 	$(CC) -c $^ -o $(ROOT_DIR)/$(OBJS_DIR)/$@
-CLEAN:
+clean:
 	@rm $(OBJS_DIR)/*.o
 	@rm -rf $(BIN_DIR)/*

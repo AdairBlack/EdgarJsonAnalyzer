@@ -7,6 +7,7 @@
 
 #include "../JsonAnalyzer/JsonAnalyzer.h"
 #include "../JsonAnalyzer/JsonNode.h"
+#include "../JsonAnalyzer/JsonContent.h"
 
 using namespace std;
 
@@ -91,7 +92,7 @@ static void testParse()
 
 int main()
 {
-    cout << "*****************Edgar's JsonAnalyzer*****************" << endl;
+    cout << "*****************Edgar's JsonAnalyzer Test*****************" << endl;
     testParse();
 
     printf("%d/%d (%3.2f%%) passed\n", test_pass, test_count, test_pass * 100.0 / test_count);

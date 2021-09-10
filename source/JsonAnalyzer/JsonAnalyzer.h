@@ -2,6 +2,7 @@
 #define JSON_ANALYZER_H__
 
 #include "JsonNode.h"
+#include "JsonContent.h"
 
 #define EXPECT(json, ch) do{assert(*json == (ch)); json++;} while(0);
 
@@ -15,9 +16,9 @@ enum {
 class JsonAnalyzer
 {
 private:
-    void jsonParseWhitespace(const char *json);
-    int jsonParseNull(const char *json, JsonNode *pJsonNode);
-    int jsonParseValue(const char *json, JsonNode *pJsonNode);
+    void jsonParseWhitespace(JsonContent &jsonContent);
+    int jsonParseNull(JsonContent &jsonContent, JsonNode *pJsonNode);
+    int jsonParseValue(JsonContent &jsonContent, JsonNode *pJsonNode);
 
 public:
     int jsonParse(JsonNode *pJsonNode, const char *json);
