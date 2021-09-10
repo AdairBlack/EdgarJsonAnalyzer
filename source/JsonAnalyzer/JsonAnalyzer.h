@@ -17,11 +17,11 @@ class JsonAnalyzer
 {
 private:
     void jsonParseWhitespace(JsonContent &jsonContent);
-    int jsonParseNull(JsonContent &jsonContent, JsonNode *pJsonNode);
-    int jsonParseValue(JsonContent &jsonContent, JsonNode *pJsonNode);
+    int jsonParseNull(JsonContent &jsonContent, JsonNode &jsonNode);
+    int jsonParseValue(JsonContent &jsonContent, JsonNode &jsonNode);
 
 public:
-    int jsonParse(JsonNode *pJsonNode, const char *json);
+    int jsonParse(JsonNode &jsonNode, const char *json);
     JsonAnalyzer() = default;
     ~JsonAnalyzer() = default;
 };

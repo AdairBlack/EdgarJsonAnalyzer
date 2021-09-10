@@ -33,9 +33,19 @@ static void testParseNull()
     JsonAnalyzer jsonAnalyzer;
     JsonNode jsonNode;
     jsonNode.jsonType = JSON_NULL;
-    EXPECT_EQ_INT(JSON_PARSE_OK, jsonAnalyzer.jsonParse(&jsonNode, "null"));
+    EXPECT_EQ_INT(JSON_PARSE_OK, jsonAnalyzer.jsonParse(jsonNode, "null"));
     EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
     return;
+}
+
+static void testParseTrue()
+{
+    JsonAnalyzer jsonAnalyzer;
+    JsonNode jsonNode;
+    jsonNode.jsonType = JSON_FALSE;
+
+    EXPECT_EQ_INT(JSON_PARSE_OK, jsonAnalyzer.jsonParse(jsonNode, "true"));
+    EXPECT_EQ_INT(JSON_TRUE, jsonNode.jsonType);
 }
 
 static void testParseExpectValue()
@@ -44,11 +54,11 @@ static void testParseExpectValue()
     JsonNode jsonNode;
 
     jsonNode.jsonType = JSON_FALSE;
-    EXPECT_EQ_INT(JSON_PARSE_EXPECT_VALUE, jsonAnalyzer.jsonParse(&jsonNode, ""));
+    EXPECT_EQ_INT(JSON_PARSE_EXPECT_VALUE, jsonAnalyzer.jsonParse(jsonNode, ""));
     EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
 
     jsonNode.jsonType = JSON_FALSE;
-    EXPECT_EQ_INT(JSON_PARSE_EXPECT_VALUE, jsonAnalyzer.jsonParse(&jsonNode, " "));
+    EXPECT_EQ_INT(JSON_PARSE_EXPECT_VALUE, jsonAnalyzer.jsonParse(jsonNode, " "));
     EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
     return;
 }
@@ -59,11 +69,11 @@ static void testParseInvalidValue()
     JsonNode jsonNode;
 
     jsonNode.jsonType = JSON_FALSE;
-    EXPECT_EQ_INT(JSON_PARSE_INVALID_VALUE, jsonAnalyzer.jsonParse(&jsonNode, "nul"));
+    EXPECT_EQ_INT(JSON_PARSE_INVALID_VALUE, jsonAnalyzer.jsonParse(jsonNode, "nul"));
     EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
 
     jsonNode.jsonType = JSON_FALSE;
-    EXPECT_EQ_INT(JSON_PARSE_INVALID_VALUE, jsonAnalyzer.jsonParse(&jsonNode, "?"));
+    EXPECT_EQ_INT(JSON_PARSE_INVALID_VALUE, jsonAnalyzer.jsonParse(jsonNode, "?"));
     EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
 
     return;
@@ -75,7 +85,7 @@ static void testParseRootNotSingular()
     JsonNode jsonNode;
 
     jsonNode.jsonType = JSON_FALSE;
-    EXPECT_EQ_INT(JSON_PARSE_ROOT_NOT_SINGULAR, jsonAnalyzer.jsonParse(&jsonNode, "null x"));
+    EXPECT_EQ_INT(JSON_PARSE_ROOT_NOT_SINGULAR, jsonAnalyzer.jsonParse(jsonNode, "null x"));
     EXPECT_EQ_INT(JSON_NULL, jsonNode.jsonType);
 
     return;
