@@ -15,9 +15,14 @@ typedef enum
 class JsonNode
 {
 private:
+    
 public:
     JsonNode() = default;
     ~JsonNode() = default;
+
+    double number;
+
+    double getNumber();
 
     JsonType jsonType;
 };

@@ -18,6 +18,9 @@ class JsonAnalyzer
 private:
     void jsonParseWhitespace(JsonContent &jsonContent);
     int jsonParseNull(JsonContent &jsonContent, JsonNode &jsonNode);
+    int jsonParseTrue(JsonContent &jsonContent, JsonNode &jsonNode);
+    int jsonParseFalse(JsonContent &jsonContent, JsonNode &jsonNode);
+    int jsonParseNumber(JsonContent &jsonContent, JsonNode &jsonNode);
     int jsonParseValue(JsonContent &jsonContent, JsonNode &jsonNode);
 
 public:
