@@ -1,7 +1,12 @@
+#include <cassert>
+#include <iostream>
+#include <cerrno>
+#include <cmath>
+#include <cstring>
+
 #include "JsonAnalyzer.h"
 #include "JsonNode.h"
-#include <assert.h>
-#include <iostream>
+
 
 using namespace std;
 
@@ -17,54 +22,76 @@ void JsonAnalyzer::jsonParseWhitespace(JsonContent &jsonContent)
     return;
 }
 
-int JsonAnalyzer::jsonParseNull(JsonContent &jsonContent, JsonNode &jsonNode)
+int JsonAnalyzer::jsonParseLiteral(JsonContent &jsonContent, JsonNode &jsonNode, const char *literal, JsonType jsonType)
 {
-    EXPECT(jsonContent.content, 'n');
-    if('u' != jsonContent.content[0] || 'l' != jsonContent.content[1] || 'l' != jsonContent.content[2])
-    {
-        return JSON_PARSE_INVALID_VALUE;
-    }
-    jsonContent.content += 3;
-    jsonNode.jsonType = JSON_NULL;
-    return JSON_PARSE_OK;
-}
+    size_t i;
+    EXPECT(jsonContent.content, literal[0]);
 
-int JsonAnalyzer::jsonParseTrue(JsonContent &jsonContent, JsonNode &jsonNode)
-{
-    EXPECT(jsonContent.content, 't');
-    if('r' != jsonContent.content[0] || 'u' != jsonContent.content[1] || 'e' != jsonContent.content[2])
+    for(i = 0; literal[i + 1] ; i++)
     {
-        return JSON_PARSE_INVALID_VALUE;
+        if(jsonContent.content[i] != literal[i + 1])
+        {
+            return JSON_PARSE_INVALID_VALUE;
+        }
     }
-    jsonContent.content += 3;
-    jsonNode.jsonType = JSON_TRUE;
-    return JSON_PARSE_OK;
-}
-
-int JsonAnalyzer::jsonParseFalse(JsonContent &jsonContent, JsonNode &jsonNode)
-{
-    EXPECT(jsonContent.content, 'f');
-    if('a' != jsonContent.content[0] || 'l' != jsonContent.content[1] || 's' != jsonContent.content[2] || 'e' != jsonContent.content[3])
-    {
-        return JSON_PARSE_INVALID_VALUE;
-    }
-    jsonContent.content += 4;
-    jsonNode.jsonType = JSON_FALSE;
+    jsonContent.content += i;
+    jsonNode.jsonType = jsonType;
     return JSON_PARSE_OK;
 }
 
 int JsonAnalyzer::jsonParseNumber(JsonContent &jsonContent, JsonNode &jsonNode)
 {
-    char *end = nullptr;
-    //TODO validate number
-    jsonNode.number = strtod(jsonContent.content, &end);
-    if(jsonContent.content == end)
+    const char* p = jsonContent.content;
+    if('-' == *p)
     {
-        return JSON_PARSE_INVALID_VALUE;
+        p++;
     }
 
-    jsonContent.content = end;
+    if('0' == *p)
+    {
+        p++;
+    } else {
+        if(!ISDIGIT1TO9(*p)) 
+        {
+            return JSON_PARSE_INVALID_VALUE;
+        }
+        FORWARD_POINTER(p);
+    }
+
+    if(*p == '.')
+    {
+        p++;
+        if(!ISDIGIT(*p))
+        {
+            return JSON_PARSE_INVALID_VALUE;
+        }
+        FORWARD_POINTER(p);
+    }
+
+    if('e' == *p || 'E' == *p)
+    {
+        p++;
+        if('+' == *p || '-' == *p)
+        {
+            p++;
+        }
+        if(!ISDIGIT(*p))
+        {
+            return JSON_PARSE_INVALID_VALUE;
+        }
+        FORWARD_POINTER(p);
+    }
+
+    errno = 0;
+    jsonNode.number = strtod(jsonContent.content, NULL);
+
+    if(ERANGE == errno && (HUGE_VAL == jsonNode.number || -HUGE_VAL == jsonNode.number))
+    {
+        return JSON_PARSE_NUMBER_TOO_BIG;
+    }
+
     jsonNode.jsonType = JSON_NUMBER;
+    jsonContent.content = p;
 
     return JSON_PARSE_OK;
 }
@@ -73,9 +100,9 @@ int JsonAnalyzer::jsonParseValue(JsonContent &jsonContent, JsonNode &jsonNode)
 {
     switch(*jsonContent.content)
     {
-        case 'n': return jsonParseNull(jsonContent, jsonNode);
-        case 't': return jsonParseTrue(jsonContent, jsonNode);
-        case 'f': return jsonParseFalse(jsonContent, jsonNode);
+        case 'n': return jsonParseLiteral(jsonContent, jsonNode, "null", JSON_NULL);
+        case 't': return jsonParseLiteral(jsonContent, jsonNode, "true", JSON_TRUE);
+        case 'f': return jsonParseLiteral(jsonContent, jsonNode, "false", JSON_FALSE);
         case '\0': return JSON_PARSE_EXPECT_VALUE;
         default: return jsonParseNumber(jsonContent, jsonNode);
     }
