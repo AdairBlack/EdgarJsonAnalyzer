@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 #include <memory>
+#include <iomanip>
 
 #include "../JsonAnalyzer/JsonAnalyzer.h"
 #include "../JsonAnalyzer/JsonNode.h"
@@ -11,18 +12,18 @@
 
 using namespace std;
 
-static int main_ret = 0;
-static int test_count = 0;
-static int test_pass = 0;
+static int mainRet = 0;
+static int testCount = 0;
+static int testPass = 0;
 
 #define EXPECT_EQ_BASE(equality, expect, actual, format) \
     do {\
-        test_count++;\
+        testCount++;\
         if (equality)\
-            test_pass++;\
+            testPass++;\
         else {\
             fprintf(stderr, "%s:%d: expect: " format " actual: " format "\n", __FILE__, __LINE__, expect, actual);\
-            main_ret = 1;\
+            mainRet = 1;\
         }\
     } while(0)
 
@@ -49,6 +50,7 @@ do{\
 
 static void testParseExpectValue()
 {
+    cout << "Test parse expect value" << endl;
     TEST_UNARY(JSON_PARSE_EXPECT_VALUE, JSON_NULL, "");
     TEST_UNARY(JSON_PARSE_EXPECT_VALUE, JSON_NULL, " ");
     
@@ -57,6 +59,7 @@ static void testParseExpectValue()
 
 static void testParseInvalidValue()
 {
+    cout << "Test parse invalid value" << endl;
     TEST_UNARY(JSON_PARSE_INVALID_VALUE, JSON_NULL, "nul");
     TEST_UNARY(JSON_PARSE_INVALID_VALUE, JSON_NULL, "?");
 
@@ -74,6 +77,7 @@ static void testParseInvalidValue()
 
 static void testParseRootNotSingular()
 {
+    cout << "Test parse root not singular" << endl;
     TEST_UNARY(JSON_PARSE_ROOT_NOT_SINGULAR, JSON_NULL, "null x");
 
     return;
@@ -81,6 +85,7 @@ static void testParseRootNotSingular()
 
 static void testParseNull()
 {
+    cout << "Test parse null" << endl;
     TEST_UNARY(JSON_PARSE_OK, JSON_NULL, "null");
 
     return;
@@ -88,6 +93,7 @@ static void testParseNull()
 
 static void testParseTrue()
 {
+    cout << "Test parse expect true" << endl;
     TEST_UNARY(JSON_PARSE_OK, JSON_TRUE, "true");
 
     return;
@@ -95,6 +101,7 @@ static void testParseTrue()
 
 static void testParseFalse()
 {
+    cout << "Test parse expect false" << endl;
     TEST_UNARY(JSON_PARSE_OK, JSON_FALSE, "false");
 
     return;
@@ -102,6 +109,7 @@ static void testParseFalse()
 
 static void testParseNumber()
 {
+    cout << "Test parse number" << endl;
     TEST_NUMBER(0.0, "0");
     TEST_NUMBER(0.0, "-0");
     TEST_NUMBER(0.0, "-0.0");
@@ -135,6 +143,11 @@ static void testParseNumber()
     return ;
 }
 
+static void testParseString()
+{
+    
+}
+
 
 
 static void testParse()
@@ -146,6 +159,7 @@ static void testParse()
     testParseTrue();
     testParseFalse();
     testParseNumber();
+    
     return;
 }
 
@@ -154,9 +168,8 @@ int main()
     cout << "*****************Edgar's JsonAnalyzer Test*****************" << endl;
     testParse();
 
-    printf("%d/%d (%3.2f%%) passed\n", test_pass, test_count, test_pass * 100.0 / test_count);
-    return main_ret;
-    
+    cout << testPass << "/" << testCount << " (" << fixed << setprecision(2)\
+    << testPass * 100.0 / testCount << ") passed." << endl;
 
-    return 0;
+    return mainRet;
 }

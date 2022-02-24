@@ -9,6 +9,8 @@ public:
     ~JsonContent() = default;
 
     const char *content;
+    char *stack;
+    size_t size, top;
 };
 
 #endif

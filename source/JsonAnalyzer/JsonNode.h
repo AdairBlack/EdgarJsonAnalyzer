@@ -1,7 +1,7 @@
 #ifndef JSON_NODE_H__
 #define JSON_NODE_H__
 
-#include <cstring>
+#include <string>
 
 typedef enum
 {
@@ -20,7 +20,7 @@ private:
     
 public:
     JsonNode() = default;
-    ~JsonNode() = default;
+    ~JsonNode();
 
     JsonType jsonType;
 
@@ -29,9 +29,11 @@ public:
     double getNumber();
 
     /*String*/
-    char* string;
-    size_t len;
-    
+    char *stringVal;
+    size_t stringLen;
+    void setString(const char *stringVal, size_t stringLen);
+    char *getString();
+
 };
 
 #endif

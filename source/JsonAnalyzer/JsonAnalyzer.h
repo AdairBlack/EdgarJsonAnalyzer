@@ -25,8 +25,8 @@ private:
     void jsonParseWhitespace(JsonContent &jsonContent);
     int jsonParseLiteral(JsonContent &jsonContent, JsonNode &jsonNode, const char *literal, JsonType jsonType);
     int jsonParseNumber(JsonContent &jsonContent, JsonNode &jsonNode);
+    int jsonParseString(JsonContent &jsonContent, JsonNode &jsonNode);
     int jsonParseValue(JsonContent &jsonContent, JsonNode &jsonNode);
-
 public:
     int jsonParse(JsonNode &jsonNode, const char *json);
     JsonAnalyzer() = default;

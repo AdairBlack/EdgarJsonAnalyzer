@@ -96,6 +96,13 @@ int JsonAnalyzer::jsonParseNumber(JsonContent &jsonContent, JsonNode &jsonNode)
     return JSON_PARSE_OK;
 }
 
+int JsonAnalyzer::jsonParseString(JsonContent &jsonContent, JsonNode &jsonNode)
+{
+    string tempString = jsonContent.content;
+    
+    return 0;
+}
+
 int JsonAnalyzer::jsonParseValue(JsonContent &jsonContent, JsonNode &jsonNode)
 {
     switch(*jsonContent.content)
@@ -103,6 +110,7 @@ int JsonAnalyzer::jsonParseValue(JsonContent &jsonContent, JsonNode &jsonNode)
         case 'n': return jsonParseLiteral(jsonContent, jsonNode, "null", JSON_NULL);
         case 't': return jsonParseLiteral(jsonContent, jsonNode, "true", JSON_TRUE);
         case 'f': return jsonParseLiteral(jsonContent, jsonNode, "false", JSON_FALSE);
+        case '"': return jsonParseString(jsonContent, jsonNode);
         case '\0': return JSON_PARSE_EXPECT_VALUE;
         default: return jsonParseNumber(jsonContent, jsonNode);
     }
